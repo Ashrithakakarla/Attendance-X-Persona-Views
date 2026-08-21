@@ -2,8 +2,7 @@ name: Run Attendance X Persona Views Pipeline Automation
 
 on:
   schedule:
-    - cron: '50 2 * * *'    # 8:00 AM IST (2:50 UTC)
-    - cron: '50 9 * * *'    # 4:00 PM IST (9:50 UTC)
+    - cron: '30 4 * * *'    # 10:00 AM IST (4:30 UTC)
   workflow_dispatch:
 
 concurrency:
