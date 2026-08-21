@@ -1,0 +1,50 @@
+name: Run Attendance X Persona Views Pipeline Automation
+
+on:
+  schedule:
+    - cron: '50 2 * * *'    # 8:00 AM IST (2:50 UTC)
+    - cron: '50 9 * * *'    # 4:00 PM IST (9:50 UTC)
+  workflow_dispatch:
+
+concurrency:
+  group: attendance-persona-pipeline-automation
+  cancel-in-progress: false
+
+jobs:
+  run-attendance-persona-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Attendance_Persona_Pipeline_Automation.py
+        env:
+          ASHRITHA_SECRET_KEY: ${{ secrets.ASHRITHA_SECRET_KEY }}
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          USERNAME: ${{ secrets.USERNAME }}
+          METABASE_URL: ${{ secrets.METABASE_URL }}
+
+        run: |
+          echo "=============================="
+          echo "Workflow triggered at UTC: $(date -u)"
+          echo "Current branch: $GITHUB_REF"
+          echo "Repository path: $GITHUB_WORKSPACE"
+          echo "=============================="
+          echo "🚀 Starting Attendance_Persona_Pipeline_Automation.py..."
+          echo "Using Metabase URL: ${METABASE_URL:0:25}****"
+          echo "Using USERNAME variable: ${USERNAME:+[SET]}"
+
+          python Attendance_Persona_Pipeline_Automation.py
+
+          echo "✅ Attendance_Persona_Pipeline_Automation.py executed successfully."
